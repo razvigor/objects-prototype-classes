@@ -152,4 +152,73 @@ output = petar.printCourses();
 console.log(petar.__proto__);
 console.log(petar.__proto__.__proto__);
 
+// Classes
+
+class ClassHuman {
+	constructor(firstName, lastName, age) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.age = age;
+		this.date = new Date();
+	}
+	get fullName() {
+		return this.firstName + ' ' + this.lastName;
+	}
+	set fullName(fullName) {
+		let nameParts = fullName.split(' ');
+		this.firstName = nameParts[0];
+		this.lastName = nameParts[1];
+	}
+	get costumizeDate() {
+		return this.date.toISOString().slice(0, 10).replaceAll('-', ' : ');
+	}
+	isAdult() {
+		return this.age >= 18;
+	}
+}
+
+//console.log(typeof ClassHuman);
+
+Object.defineProperty(ClassHuman.prototype, 'fullName', {
+	enumerable: true,
+});
+
+const me = new ClassHuman('Sasa', 'Trkulja', 55);
+
+//me.fullName = 'Petar Petrovic';
+
+output = JSON.stringify(me);
+// output = me.fullName;
+// output = me.date;
+// output = me.costumizeDate;
+// output = me.isAdult();
+
+//output = JSON.stringify(Object.getOwnPropertyDescriptor(me, 'fullName'));
+class ClassStudent extends ClassHuman {
+	constructor(firstName, lastName, age) {
+		super(firstName, lastName, age);
+		this._enroledCourses = [];
+	}
+	static fromClassHuman(person) {
+		return new Student(person.firstName, person.lastName, person.age);
+	}
+	enroll(courseName) {
+		this._enroledCourses.push(courseName);
+	}
+	printCourses() {
+		return (
+			this.fullName +
+			"'s enrolled courses are: " +
+			this._enroledCourses.join(', ')
+		);
+	}
+}
+
+//const meStudent = new ClassStudent('Sasa', 'Trkulja', 55);
+const meStudent = ClassStudent.fromClassHuman(me);
+meStudent.enroll('javaScript');
+meStudent.enroll('HTML');
+meStudent.enroll('CSS');
+
+output = meStudent.printCourses();
 root.innerHTML = output;
