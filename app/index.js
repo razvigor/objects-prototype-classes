@@ -98,4 +98,58 @@ output = Person.prototype === sasa.__proto__;
 
 output = sasa.hasOwnProperty('job');
 
+function Human(firstName, lastName, age) {
+	this.firstName = firstName;
+	this.lastName = lastName;
+	this.age = age;
+
+	Object.defineProperty(this, 'fullName', {
+		get: function () {
+			return this.firstName + ' ' + this.lastName;
+		},
+		set: function (value) {
+			let nameParts = value.split(' ');
+			this.firstName = nameParts[0];
+			this.lastName = nameParts[1];
+		},
+		enumerable: true,
+	});
+}
+
+function Student(firstName, lastName, age) {
+	Human.call(this, firstName, lastName, age);
+	this._enroledCourses = [];
+	this.enroll = function (courseName) {
+		this._enroledCourses.push(courseName);
+	};
+	this.printCourses = function () {
+		return (
+			this.fullName +
+			"'s enrolled courses are: " +
+			this._enroledCourses.join(', ')
+		);
+	};
+}
+output = Student.prototype.constructor;
+
+Student.prototype = Object.create(Human.prototype);
+
+output = Student.prototype.constructor;
+
+Student.prototype.constructor = Student;
+
+output = Student.prototype.constructor;
+
+const petar = new Student('Petar', 'Petrovic', 22);
+
+petar.enroll('HTML');
+petar.enroll('CSS');
+petar.enroll('javaScript');
+
+output = JSON.stringify(petar);
+output = petar.printCourses();
+
+console.log(petar.__proto__);
+console.log(petar.__proto__.__proto__);
+
 root.innerHTML = output;
